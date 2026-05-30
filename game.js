@@ -87,6 +87,57 @@ canvas.addEventListener('touchmove', function(e) {
     leftPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddle.y));
 }, { passive: false });
 
+// Improved mobile controls: left-side control zone and up/down buttons
+const leftControl = document.getElementById('leftControl');
+const upBtn = document.getElementById('upBtn');
+const downBtn = document.getElementById('downBtn');
+
+let mobileMoveUp = false;
+let mobileMoveDown = false;
+
+if (leftControl) {
+    // Map touches on the left control to paddle position (control is off-canvas so finger doesn't block ball)
+    leftControl.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        // Use the Y within canvas to compute paddle center
+        const y = t.clientY - rect.top;
+        leftPaddle.y = y - paddleHeight / 2;
+        leftPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddle.y));
+    }, { passive: false });
+
+    leftControl.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const y = t.clientY - rect.top;
+        // Smoothly interpolate to touched position to avoid jumps
+        const targetY = Math.max(0, Math.min(canvas.height - paddleHeight, y - paddleHeight / 2));
+        // Ease toward target for smooth motion
+        leftPaddle.y += (targetY - leftPaddle.y) * 0.3;
+    }, { passive: false });
+
+    leftControl.addEventListener('touchend', (e) => { e.preventDefault(); }, { passive: false });
+}
+
+// Up/down button behavior (supports touch and mouse)
+function bindButtonHold(btn, setter) {
+    let holdId = null;
+    const start = (e) => { e.preventDefault(); setter(true); };
+    const end = (e) => { e && e.preventDefault(); setter(false); };
+    btn.addEventListener('touchstart', start, { passive: false });
+    btn.addEventListener('mousedown', start);
+    window.addEventListener('touchend', end, { passive: false });
+    window.addEventListener('mouseup', end);
+}
+
+if (upBtn && downBtn) {
+    bindButtonHold(upBtn, (v) => mobileMoveUp = v);
+    bindButtonHold(downBtn, (v) => mobileMoveDown = v);
+}
+
+
 // Keyboard controls
 window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
@@ -208,6 +259,11 @@ function update() {
     }
     // Clamp AI paddle
     rightPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddle.y));
+
+    // Mobile buttons continuous movement
+    if (mobileMoveUp) leftPaddle.y -= leftPaddle.speed;
+    if (mobileMoveDown) leftPaddle.y += leftPaddle.speed;
+    leftPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddle.y));
 }
 
 function resetBall() {

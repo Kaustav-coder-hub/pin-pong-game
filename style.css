@@ -18,6 +18,46 @@ canvas {
     box-shadow: 0 0 20px #000;
 }
 
+/* Side control overlay (touchable area placed to the left of canvas) */
+#game-container { position: relative; }
+.side-control {
+    position: absolute;
+    left: calc(50% - 400px - 80px); /* canvas centered at 800px width; place control 80px left of canvas */
+    top: 0;
+    width: 80px;
+    height: 100%;
+    background: rgba(0,0,0,0.02);
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Mobile buttons */
+#mobile-controls {
+    position: absolute;
+    left: calc(50% - 400px - 120px);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#mobile-controls button {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    font-size: 28px;
+    background: rgba(0,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #eaffff;
+    backdrop-filter: blur(4px);
+}
+
+/* Only show mobile controls on small screens */
+@media (min-width: 700px) {
+    .side-control, #mobile-controls { display: none; }
+}
+
 #scoreboard {
     display: flex;
     justify-content: center;
