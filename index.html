@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Pong Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Simple Pong Game</h1>
+    <div id="scoreboard">
+        <div id="user-score">User: 0</div>
+        <div id="ai-score">AI: 0</div>
+        <div id="user-highscore">User High: 0</div>
+        <div id="ai-highscore">AI High: 0</div>
+    </div>
+    <div id="game-container">
+        <canvas id="pongCanvas" width="800" height="500"></canvas>
+    </div>
+    <div id="controls">
+        <button id="restartBtn">Restart</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="exitBtn">Exit</button>
+    </div>
+    <div id="hints">
+        <small>Controls: <strong>W/S</strong> or <strong>↑/↓</strong> to move. <strong>Space</strong> to pause. Click/touch canvas to move paddle.</small>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
